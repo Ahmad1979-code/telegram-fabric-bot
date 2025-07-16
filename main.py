@@ -1,6 +1,7 @@
 from flask import Flask, request
 import requests
 import os
+import json
 
 app = Flask(__name__)
 
@@ -13,7 +14,8 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+creds_json = json.loads(os.getenv("GOOGLE_CREDS"))  # из переменной окружения
+creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_json, scope)
 client = gspread.authorize(creds)
 
 def extract_sizes(text):
@@ -89,3 +91,5 @@ def round_up(value, step):
 
 if __name__ == "__main__":
     app.run()
+
+      
